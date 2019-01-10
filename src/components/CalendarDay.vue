@@ -28,9 +28,7 @@
         },
         methods:{
             captureClick(mouseEvent){
-                this.$store.commit('eventFormPos',{x:mouseEvent.clientX, y:mouseEvent.clientY});
-                this.$store.commit('eventFormActive', true);
-                this.$store.commit('eventFormDate',this.day);
+                this.$bus.$emit('create-event-request', mouseEvent.clientX,mouseEvent.clientY,this.day)
             },
             onClickEvent(calendarEvent){
                 console.log("an calendarEvent is chosen -- " + calendarEvent.description)

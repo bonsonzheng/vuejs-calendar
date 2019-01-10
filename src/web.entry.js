@@ -12,6 +12,13 @@ Object.defineProperty(Vue.prototype, '$moment', {
   }
 });
 
+const bus = new Vue();
+Object.defineProperty(Vue.prototype, '$bus', {
+  get() {
+    return this.$root.bus;
+  }
+});
+
 let events = window.__INITIAL_STATE__.map(state => {
       return {
         description: state.description,
@@ -26,7 +33,8 @@ store.replaceState(initialState);
 new Vue({
   el: '#app',
   data: {
-    moment
+    moment,
+    bus
   },
 
   components: {

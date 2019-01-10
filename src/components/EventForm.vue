@@ -3,7 +3,8 @@
         <h4>add an event</h4>
         <p>{{ date }}</p>
         <div class="text">
-            <input v-focus type="text" v-model="description" placeholder="What are you going to do" @keyup.enter="create">
+            <input v-focus type="text" v-model="description" placeholder="What are you going to do"
+                   @keyup.enter="create">
         </div>
         <div class="buttons">
             <button @click="create">Create</button>
@@ -13,43 +14,56 @@
 </template>
 
 <script>
+
     export default {
         data() {
             return {
-                description: ''
+                description: '',
+                top:0,
+                left:0
             }
         },
+
+        created() {
+            console.log("created() is invoked")
+            this.$bus.$on('create-event-request', this.openForm);
+            this.$bus.$on('month-changed', this.monthChanged);
+        },
         methods: {
+            openForm(posX, posY, date) {
+                this.left = posX + 'px';
+                this.top = posY + 'px';
+                this.$store.commit('eventFormDate',date);
+                this.$store.commit('eventFormActive',true);
+            },
+            monthChanged(){
+                this.$store.commit('eventFormActive',false);
+            },
+
             create() {
-                if(this.description.length > 0){
-                    this.$store.dispatch('addEvent', this.description).then(_=>{
-                        this.description='';
+                if (this.description.length > 0) {
+                    this.$store.dispatch('addEvent', {description:this.description,date:this.$store.state.eventFormDate}).then(_ => {
+                        this.description = '';
                         this.$store.commit('eventFormActive',false);
                     });
                 }
             },
             close() {
-                this.$store.commit('eventFormActive', false);
+                this.$store.commit('eventFormActive',false);
             }
         },
-        computed: {
+        computed:{
+            active(){
+                return this.$store.state.eventFormActive;
+            },
             date(){
                 let selectedDate = this.$store.state.eventFormDate;
                 return selectedDate.format('dddd, MMM Do');
-            },
-            active() {
-                return this.$store.state.eventFormActive;
-            },
-            top() {
-                return `${this.$store.state.eventFormPosY}px`;
-            },
-            left() {
-                return `${this.$store.state.eventFormPosX}px`;
             }
         },
-        directives:{
-            focus:{
-                update(el){
+        directives: {
+            focus: {
+                update(el) {
                     el.focus();
                 }
             }
@@ -57,7 +71,3 @@
 
     }
 </script>
-
-<style scoped>
-
-</style>

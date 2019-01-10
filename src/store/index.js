@@ -10,10 +10,8 @@ import Axios from "axios"
 
 export default new Vuex.Store({
     state: {
-        currentYear: 2018,
-        currentMonth: 12,
-        eventFormPosX: 0,
-        eventFormPosY: 0,
+        currentYear: moment().year(),
+        currentMonth: moment().month()+1,
         eventFormActive: false,
         events: [],
         eventFormDate: moment()
@@ -26,11 +24,6 @@ export default new Vuex.Store({
 
         setCurrentYear(state, payload) {
             state.currentYear = payload;
-        },
-
-        eventFormPos(state, payload) {
-            state.eventFormPosX = payload.x;
-            state.eventFormPosY = payload.y;
         },
 
         eventFormActive(state, payload) {
@@ -50,8 +43,8 @@ export default new Vuex.Store({
         addEvent(context, payload) {
             return new Promise((resolve, reject) => {
                 let object = {
-                    description: payload,
-                    date: context.state.eventFormDate
+                    description: payload.description,
+                    date: payload.date
                 };
 
                 Axios.post('/event', object).then(response => {
@@ -65,6 +58,6 @@ export default new Vuex.Store({
             });
 
         }
-    }
+    },
 
 });

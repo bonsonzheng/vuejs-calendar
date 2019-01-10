@@ -27,6 +27,9 @@
 </template>
 
 <script>
+    import moment from 'moment-timezone';
+    moment.tz.setDefault('UTC');
+
     import CurrentMonth from "./currentMonth.vue";
     import CalendarDay from './CalendarDay.vue';
     import EventForm from "./EventForm.vue"
@@ -87,10 +90,6 @@
                 }
                 return weeks;
             }
-        },
-
-        created() {
-            console.log(this.$moment)
         },
 
         components: {
