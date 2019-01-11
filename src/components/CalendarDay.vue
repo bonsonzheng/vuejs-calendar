@@ -2,7 +2,7 @@
     <div :class="highLightToday" @click="captureClick">
         {{day.format('D')}}
         <ul class="event-list">
-            <li v-for = "event in events" @click="onClickEvent(event)">{{event.description}}</li>
+            <li v-for = "event in events" @click.stop="onClickEvent(event,$event)">{{event.description}}</li>
         </ul>
     </div>
 </template>
@@ -30,9 +30,11 @@
             captureClick(mouseEvent){
                 this.$bus.$emit('create-event-request', mouseEvent.clientX,mouseEvent.clientY,this.day)
             },
-            onClickEvent(calendarEvent){
-                console.log("an calendarEvent is chosen -- " + calendarEvent.description)
+
+            onClickEvent(userEvent,mouseEvent){
+                this.$bus.$emit('modify-event-request', mouseEvent.clientX,mouseEvent.clientY,userEvent,this.day)
             }
+
         }
     }
 </script>

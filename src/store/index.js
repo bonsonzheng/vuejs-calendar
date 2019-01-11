@@ -34,6 +34,15 @@ export default new Vuex.Store({
             state.events.push(payload);
         },
 
+        deleteEvent(state, eventId) {
+            let index = state.events.findIndex((obj => obj.eventId == eventId));
+            state.events.splice(index,1);
+        },
+
+        updateEvent(state, payload) {
+            let index = state.events.findIndex((obj => obj.eventId == payload.eventId));
+            state.events[index].description = payload.description;
+        },
         eventFormDate(state, payload) {
             state.eventFormDate = payload;
         }
@@ -43,6 +52,7 @@ export default new Vuex.Store({
         addEvent(context, payload) {
             return new Promise((resolve, reject) => {
                 let object = {
+                    eventId: payload.eventId,
                     description: payload.description,
                     date: payload.date
                 };
@@ -51,6 +61,38 @@ export default new Vuex.Store({
                     if (response.status === 200) {
                         context.commit('addEvent', object);
                             resolve();
+                    }else{
+                        reject();
+                    }
+                });
+            });
+
+        },
+        updateEvent(context, payload) {
+            return new Promise((resolve, reject) => {
+                let object = {
+                    eventId: payload.eventId,
+                    description: payload.description,
+                    date: payload.date
+                };
+
+                Axios.put('/event', object).then(response => {
+                    if (response.status === 200) {
+                        context.commit('updateEvent', object);
+                        resolve();
+                    }else{
+                        reject();
+                    }
+                });
+            });
+
+        },
+        deleteEvent(context, payload) {
+            return new Promise((resolve, reject) => {
+                Axios.delete('/event/' + payload).then(response => {
+                    if (response.status === 200) {
+                        context.commit('deleteEvent',payload);
+                        resolve();
                     }else{
                         reject();
                     }

@@ -21,6 +21,7 @@ Object.defineProperty(Vue.prototype, '$bus', {
 
 let events = window.__INITIAL_STATE__.map(state => {
       return {
+        eventId: state.eventId,
         description: state.description,
         date: moment(state.date)
       };

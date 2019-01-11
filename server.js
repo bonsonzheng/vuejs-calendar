@@ -12,9 +12,9 @@ const serialize = require('serialize-javascript');
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 let events=[
-  {description: "Random event 1", date: moment('2018-12-24','YYYY-MM-DD')},
-  {description: "Random event 2", date: moment('2018-12-25','YYYY-MM-DD')},
-  {description: "Random event 3", date: moment('2018-12-29','YYYY-MM-DD')}
+  {eventId:"default001",description: "Random event 1", date: moment('2018-12-24','YYYY-MM-DD')},
+  {eventId:"default002",description: "Random event 2", date: moment('2018-12-25','YYYY-MM-DD')},
+  {eventId:"default003",description: "Random event 3", date: moment('2018-12-29','YYYY-MM-DD')}
 ]
 
 app.get('/', (req, res) => {
@@ -31,6 +31,19 @@ app.post('/event',(req,res)=>{
   events.push(req.body);
   res.sendStatus(200);
 });
+
+app.delete('/event/:eventId',(req,res)=>{
+  console.log(req.params.eventId)
+  events.splice(events.findIndex((obj => obj.eventId == req.params.eventId)),1);
+  res.sendStatus(200);
+});
+
+app.put('/event',(req,res)=>{
+  let index = events.findIndex((obj => obj.eventId == req.body.eventId));
+  events[index].description = req.body.description;
+  res.sendStatus(200);
+});
+
 
 const server = http.createServer(app);
 
